@@ -78,7 +78,7 @@ export function TimeBoundToggle() {
                 }
               }}
               disabled={(date) =>
-                date < new Date(new Date().setHours(0, 0, 0, 0))
+                date <= new Date(new Date().setHours(0, 0, 0, 0))
               }
             />
           </PopoverContent>

@@ -45,7 +45,7 @@ function Calendar({
         ),
         range_end: "day-range-end",
         selected: "day-selected",
-        today: "bg-gray-100 text-gray-900 rounded-md",
+        today: "",
         outside: "day-outside",
         disabled: "day-disabled",
         range_middle: "aria-selected:bg-gray-100 aria-selected:text-gray-900",
