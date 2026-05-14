@@ -7,6 +7,7 @@ import { AsyncBoundary } from "@/components/ui/async-boundary";
 import { Button } from "@/components/ui/button";
 import { useAsync } from "@/hooks/use-async";
 import { CARDS_DATA } from "@/constants/gamification";
+import { EmptyRewardsIcon } from "@/components/icons/empty-rewards-icon";
 
 /**
  * Simulates fetching gamification card data from an API.
@@ -66,19 +67,7 @@ export function GamificationPage() {
             emptyFallback={
               <div className="col-span-full flex flex-col items-center py-12 text-center">
                 <div className="size-14 rounded-full bg-brand-75 flex items-center justify-center mb-4">
-                  <svg
-                    className="size-7 text-brand-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
-                    />
-                  </svg>
+                  <EmptyRewardsIcon className="size-7 text-brand-500" />
                 </div>
                 <h3 className="text-base font-semibold text-gray-800 mb-1">
                   No rewards set up yet

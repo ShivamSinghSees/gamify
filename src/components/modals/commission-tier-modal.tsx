@@ -54,7 +54,11 @@ export function CommissionTierModal() {
         if (!open) handleClose();
       }}
     >
-      <DialogContent className="sm:max-w-[400px] p-6">
+      <DialogContent
+        className="sm:max-w-[400px] p-6"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>Select a commission tier</DialogTitle>
         </DialogHeader>
