@@ -1,13 +1,28 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import landingBg from "@/assets/landing-bg.webp";
 import { GamificationCard } from "@/components/gamification/gamification-card";
+import { GamificationCardSkeleton } from "@/components/gamification/gamification-card-skeleton";
 import { CreateRewardModal } from "@/components/modals/create-reward-modal";
+import { AsyncBoundary } from "@/components/ui/async-boundary";
 import { Button } from "@/components/ui/button";
-
+import { useAsync } from "@/hooks/use-async";
 import { CARDS_DATA } from "@/constants/gamification";
+
+/**
+ * Simulates fetching gamification card data from an API.
+ * In production, this would be replaced with a real API call.
+ */
+const fetchGamificationData = () => CARDS_DATA;
 
 export function GamificationPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const {
+    data: cards,
+    status,
+    error,
+    retry,
+  } = useAsync(useCallback(fetchGamificationData, []), { delay: 1000 });
 
   return (
     <div className="p-4 xl:p-0 bg-white">
@@ -37,14 +52,54 @@ export function GamificationPage() {
       {/* Cards Section with flowing waves */}
       <div className="relative mt-[-40px] md:mt-[-65px] px-[18px] overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
-          {CARDS_DATA.map((card, index) => (
-            <GamificationCard
-              key={index}
-              title={card.title}
-              description={card.description}
-              icon={card.icon}
-            />
-          ))}
+          <AsyncBoundary
+            status={status}
+            error={error}
+            onRetry={retry}
+            loadingFallback={
+              <>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <GamificationCardSkeleton key={i} />
+                ))}
+              </>
+            }
+            emptyFallback={
+              <div className="col-span-full flex flex-col items-center py-12 text-center">
+                <div className="size-14 rounded-full bg-brand-75 flex items-center justify-center mb-4">
+                  <svg
+                    className="size-7 text-brand-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-base font-semibold text-gray-800 mb-1">
+                  No rewards set up yet
+                </h3>
+                <p className="text-sm text-gray-500 max-w-xs">
+                  Enable gamification above to start building your custom reward
+                  system.
+                </p>
+              </div>
+            }
+            isEmpty={!cards || (cards.length as number) === 0}
+          >
+            {cards?.map((card, index) => (
+              <GamificationCard
+                key={index}
+                title={card.title}
+                description={card.description}
+                icon={card.icon}
+              />
+            ))}
+          </AsyncBoundary>
         </div>
       </div>
 

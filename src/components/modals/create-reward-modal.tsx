@@ -25,6 +25,7 @@ export function CreateRewardModal({
 }: CreateRewardModalProps) {
   const {
     isFormValid,
+    isSubmitting,
     isUpgradeDisabled,
     rewardEventDisplayLabel,
     rewardWithDisplayLabel,
@@ -80,6 +81,7 @@ export function CreateRewardModal({
                 type="button"
                 variant="gamify"
                 disabled={!isFormValid}
+                loading={isSubmitting}
                 onClick={handleCreate}
                 fullWidth
                 tooltipText={tooltipText}

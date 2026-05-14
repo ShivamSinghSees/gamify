@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { resetRewardForm } from "@/store/reward-slice";
 import { POSTS_PERIOD_OPTIONS, COMMISSION_TIER_LABELS } from "@/constants/reward";
@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 export function useRewardForm(onOpenChange: (open: boolean) => void) {
   const dispatch = useAppDispatch();
   const reward = useAppSelector((state) => state.reward);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     rewardEvent,
@@ -78,23 +79,39 @@ export function useRewardForm(onOpenChange: (open: boolean) => void) {
     dispatch(resetRewardForm());
   }, [dispatch, onOpenChange]);
 
-  const handleCreate = useCallback(() => {
-    console.log("Reward created:", {
-      rewardEvent,
-      salesAmount,
-      postsCount,
-      postsPeriod,
-      rewardWith,
-      flatBonusAmount,
-      selectedCommissionTier,
-      isTimeBound,
-      endDate,
-    });
-    onOpenChange(false);
-    dispatch(resetRewardForm());
-    toast({
-      title: "Reward Created!",
-    });
+  const handleCreate = useCallback(async () => {
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API call — replace with real endpoint in production
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      console.log("Reward created:", {
+        rewardEvent,
+        salesAmount,
+        postsCount,
+        postsPeriod,
+        rewardWith,
+        flatBonusAmount,
+        selectedCommissionTier,
+        isTimeBound,
+        endDate,
+      });
+
+      onOpenChange(false);
+      dispatch(resetRewardForm());
+      toast({
+        title: "Reward Created!",
+      });
+    } catch {
+      toast({
+        title: "Failed to create reward",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }, [
     dispatch,
     onOpenChange,
@@ -112,6 +129,7 @@ export function useRewardForm(onOpenChange: (open: boolean) => void) {
   return {
     reward,
     isFormValid,
+    isSubmitting,
     isUpgradeDisabled,
     rewardEventDisplayLabel,
     rewardWithDisplayLabel,
