@@ -1,27 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-export type RewardEventType =
-  | "cross_x_sales"
-  | "posts_x_times"
-  | "is_onboarded";
-
-export type PostsPeriod =
-  | "14_days"
-  | "1_month"
-  | "2_months"
-  | "3_months"
-  | "1_year";
-
-export type RewardWithType =
-  | "flat_bonus"
-  | "upgrade_commission_tier";
-
-export type CommissionTier =
-  | "silver"
-  | "gold"
-  | "platinum"
-  | "diamond"
-  | "elite";
+import type {
+  RewardEventType,
+  PostsPeriod,
+  RewardWithType,
+  CommissionTier,
+} from "@/types/reward";
 
 interface RewardState {
   // Reward Event
@@ -38,6 +21,7 @@ interface RewardState {
   // Modal states
   isCommissionTierModalOpen: boolean;
   isTimeBound: boolean;
+  endDate: string | null;
 
   // Dropdown open states
   isRewardEventDropdownOpen: boolean;
@@ -56,6 +40,7 @@ const initialState: RewardState = {
 
   isCommissionTierModalOpen: false,
   isTimeBound: false,
+  endDate: null,
 
   isRewardEventDropdownOpen: false,
   isRewardWithDropdownOpen: false,
@@ -109,6 +94,12 @@ export const rewardSlice = createSlice({
     },
     setIsTimeBound(state, action: PayloadAction<boolean>) {
       state.isTimeBound = action.payload;
+      if (!action.payload) {
+        state.endDate = null;
+      }
+    },
+    setEndDate(state, action: PayloadAction<string | null>) {
+      state.endDate = action.payload;
     },
     setRewardEventDropdownOpen(state, action: PayloadAction<boolean>) {
       state.isRewardEventDropdownOpen = action.payload;
@@ -133,6 +124,7 @@ export const {
   openCommissionTierModal,
   closeCommissionTierModal,
   setIsTimeBound,
+  setEndDate,
   setRewardEventDropdownOpen,
   setRewardWithDropdownOpen,
   resetRewardForm,

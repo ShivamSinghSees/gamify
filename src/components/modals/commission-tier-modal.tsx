@@ -18,16 +18,9 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   setSelectedCommissionTier,
   closeCommissionTierModal,
-  type CommissionTier,
 } from "@/store/reward-slice";
-
-const COMMISSION_TIERS: { value: CommissionTier; label: string }[] = [
-  { value: "silver", label: "Silver" },
-  { value: "gold", label: "Gold" },
-  { value: "platinum", label: "Platinum" },
-  { value: "diamond", label: "Diamond" },
-  { value: "elite", label: "Elite" },
-];
+import { COMMISSION_TIERS } from "@/constants/reward";
+import type { CommissionTier } from "@/types/reward";
 
 export function CommissionTierModal() {
   const dispatch = useAppDispatch();
@@ -64,12 +57,14 @@ export function CommissionTierModal() {
 
         <div className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="commissionTier">Upgrade to</Label>
+            <Label required htmlFor="commissionTier">
+              Upgrade to
+            </Label>
             <Select
               value={localTier}
               onValueChange={(val) => setLocalTier(val as CommissionTier)}
             >
-              <SelectTrigger id="commissionTier">
+              <SelectTrigger id="commissionTier" className="mt-2">
                 <SelectValue placeholder="Select a tier" />
               </SelectTrigger>
               <SelectContent>

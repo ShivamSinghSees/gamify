@@ -1,0 +1,103 @@
+import { useCallback, useMemo } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { resetRewardForm } from "@/store/reward-slice";
+import { POSTS_PERIOD_OPTIONS, COMMISSION_TIER_LABELS } from "@/constants/reward";
+
+export function useRewardForm(onOpenChange: (open: boolean) => void) {
+  const dispatch = useAppDispatch();
+  const reward = useAppSelector((state) => state.reward);
+
+  const {
+    rewardEvent,
+    salesAmount,
+    postsCount,
+    postsPeriod,
+    rewardWith,
+    flatBonusAmount,
+    selectedCommissionTier,
+    isTimeBound,
+  } = reward;
+
+  const isFormValid = useMemo(() => {
+    if (!rewardEvent || !rewardWith) return false;
+    if (rewardEvent === "cross_x_sales" && !salesAmount) return false;
+    if (rewardEvent === "posts_x_times" && (!postsCount || !postsPeriod))
+      return false;
+    if (rewardWith === "flat_bonus" && !flatBonusAmount) return false;
+    if (rewardWith === "upgrade_commission_tier" && !selectedCommissionTier)
+      return false;
+    return true;
+  }, [rewardEvent, salesAmount, postsCount, postsPeriod, rewardWith, flatBonusAmount, selectedCommissionTier]);
+
+  const rewardEventDisplayLabel = useMemo((): string => {
+    if (!rewardEvent) return "";
+    if (rewardEvent === "cross_x_sales") {
+      return salesAmount
+        ? `Cross $${salesAmount} in sales`
+        : "Cross $X in sales";
+    }
+    if (rewardEvent === "posts_x_times") {
+      const periodLabel = postsPeriod
+        ? POSTS_PERIOD_OPTIONS.find((p) => p.value === postsPeriod)?.label
+        : "Y period";
+      return `Posts ${postsCount || "X"} times every ${periodLabel}`;
+    }
+    return "Is Onboarded";
+  }, [rewardEvent, salesAmount, postsCount, postsPeriod]);
+
+  const rewardWithDisplayLabel = useMemo((): string => {
+    if (!rewardWith) return "";
+    if (rewardWith === "flat_bonus") {
+      return flatBonusAmount
+        ? `Flat $${flatBonusAmount} bonus`
+        : "Flat $X bonus";
+    }
+    if (rewardWith === "upgrade_commission_tier" && selectedCommissionTier) {
+      return `Upgrade to ${COMMISSION_TIER_LABELS[selectedCommissionTier]}`;
+    }
+    return "Upgrade Commission Tier";
+  }, [rewardWith, flatBonusAmount, selectedCommissionTier]);
+
+  const isUpgradeDisabled = rewardEvent !== "cross_x_sales";
+
+  const handleCancel = useCallback(() => {
+    onOpenChange(false);
+    dispatch(resetRewardForm());
+  }, [dispatch, onOpenChange]);
+
+  const handleCreate = useCallback(() => {
+    console.log("Reward created:", {
+      rewardEvent,
+      salesAmount,
+      postsCount,
+      postsPeriod,
+      rewardWith,
+      flatBonusAmount,
+      selectedCommissionTier,
+      isTimeBound,
+    });
+    onOpenChange(false);
+    dispatch(resetRewardForm());
+  }, [
+    dispatch,
+    onOpenChange,
+    rewardEvent,
+    salesAmount,
+    postsCount,
+    postsPeriod,
+    rewardWith,
+    flatBonusAmount,
+    selectedCommissionTier,
+    isTimeBound,
+  ]);
+
+  return {
+    reward,
+    isFormValid,
+    isUpgradeDisabled,
+    rewardEventDisplayLabel,
+    rewardWithDisplayLabel,
+    handleCancel,
+    handleCreate,
+  };
+}
