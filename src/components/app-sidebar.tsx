@@ -5,9 +5,9 @@ import {
   BriefcaseBusiness,
   FileChartColumnIncreasing,
   Wallet,
-} from 'lucide-react'
+} from "lucide-react";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
@@ -19,30 +19,39 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
-} from '@/components/ui/sidebar'
+} from "@/components/ui/sidebar";
 const NAV_ITEMS = [
-  { title: 'Home', icon: House , href: '/', isActive: false },
-  { title: 'Insights', icon: Brain, href: '/insights', isActive: false },
-  { title: 'Gamification', icon: BriefcaseBusiness, href: '/gamification', isActive: true },
-  { title: 'Applications', icon: FileChartColumnIncreasing, href: '/applications', isActive: false },
-  { title: 'Payments', icon: Wallet, href: '/payments', isActive: false },
-] as const
+  { title: "Home", icon: House, href: "/", isActive: false },
+  { title: "Insights", icon: Brain, href: "/insights", isActive: false },
+  {
+    title: "Gamification",
+    icon: BriefcaseBusiness,
+    href: "/gamification",
+    isActive: true,
+  },
+  {
+    title: "Applications",
+    icon: FileChartColumnIncreasing,
+    href: "/applications",
+    isActive: false,
+  },
+  { title: "Payments", icon: Wallet, href: "/payments", isActive: false },
+] as const;
 
 interface AppSidebarProps {
-  className?: string
+  className?: string;
 }
 
 export function AppSidebar({ className }: AppSidebarProps) {
   return (
-    <Sidebar
-      className={cn('border-r-0', className)}
-      collapsible="none"
-    >
+    <Sidebar className={cn("border-r-0", className)} collapsible="none">
       <div className="flex min-h-[calc(100svh)] flex-col  bg-brand-50">
         <SidebarHeader className="sticky top-0 z-10 p-4 backdrop-blur-[14px] bg-brand-50/50">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 blur-[6px]">
             <div className="size-8 rounded-full bg-linear-to-br from-fuchsia-500 to-purple-600" />
-            <span className="text-lg font-semibold text-foreground/80 ">Gamify</span>
+            <span className="text-lg font-semibold text-foreground/80 ">
+              Gamify
+            </span>
           </div>
         </SidebarHeader>
 
@@ -57,9 +66,9 @@ export function AppSidebar({ className }: AppSidebarProps) {
                       isActive={item.isActive}
                       tooltip={item.title}
                       className={cn(
-                        'h-9 pr-[33px] font-medium leading-[1.3] text-gray-600 hover:bg-sidebar-accent',
+                        "h-9 pr-[33px] font-medium leading-[1.3] text-gray-600 hover:bg-sidebar-accent",
                         item.isActive &&
-                          'bg-sidebar-accent text-brand-500 hover:bg-sidebar-accent'
+                          "bg-sidebar-accent text-brand-500 hover:bg-sidebar-accent",
                       )}
                     >
                       <a href={item.href}>
@@ -95,5 +104,5 @@ export function AppSidebar({ className }: AppSidebarProps) {
         </SidebarFooter>
       </div>
     </Sidebar>
-  )
+  );
 }
