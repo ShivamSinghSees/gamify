@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -22,29 +22,32 @@ function Calendar({
         month: "space-y-4 relative",
         month_caption: "flex justify-center pt-1 relative items-center h-9",
         caption_label: "text-sm font-medium",
-        nav: "flex items-center",
+        nav: "absolute inset-x-0 top-0 flex items-center justify-between pointer-events-none h-9",
         button_previous: cn(
-          "h-7 w-7 bg-transparent p-0 opacity-50 absolute left-4 top-5 flex items-center justify-center rounded-md border border-gray-border text-gray-800 z-10",
+          "h-7 w-7 bg-transparent p-0 absolute left-4 top-5 flex items-center justify-center rounded-md border border-gray-border text-gray-800 z-10 pointer-events-auto cursor-pointer",
         ),
         button_next: cn(
-          "h-7 w-7 bg-transparent p-0 opacity-50 absolute right-4 top-5 flex items-center justify-center rounded-md border border-gray-border text-gray-800 z-10",
+          "h-7 w-7 bg-transparent p-0 absolute right-0 top-5 flex items-center justify-center rounded-md border border-gray-border text-gray-800 z-10 pointer-events-auto cursor-pointer",
         ),
         month_grid: "w-full border-collapse space-y-1",
-        weeks: "flex flex-col",
+        weeks: "flex flex-col ",
         weekdays: "flex",
-        weekday: "text-gray-500 rounded-md w-9 font-normal text-[0.8rem]",
+        weekday: "text-gray-600 rounded-md w-9 font-medium text-sm",
         week: "flex w-full mt-2",
-        day: cn(
+        day: "h-9 w-9 p-0 text-center text-sm relative group",
+        day_button: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+          "h-9 w-9 p-0 font-medium transition-colors rounded-md",
+          "text-gray-800 hover:bg-gray-100 hover:text-gray-800",
+          "group-[.day-outside]:text-gray-600",
+          "group-[.day-disabled]:!text-gray-300 group-[.day-disabled]:opacity-50 group-[.day-disabled]:cursor-not-allowed",
+          "group-[.day-selected]:!bg-brand-500 group-[.day-selected]:!text-white group-[.day-selected]:opacity-100 group-[.day-selected]:hover:!bg-brand-500 group-[.day-selected]:hover:!text-white",
         ),
         range_end: "day-range-end",
-        selected:
-          "bg-brand-500 text-white hover:bg-brand-500 hover:text-white focus:bg-brand-500 focus:text-white",
-        today: "bg-gray-100 text-gray-900",
-        outside:
-          "day-outside text-gray-500 opacity-50 aria-selected:bg-gray-100/50 aria-selected:text-gray-500 aria-selected:opacity-30",
-        disabled: "text-gray-500 opacity-50",
+        selected: "day-selected",
+        today: "bg-gray-100 text-gray-900 rounded-md",
+        outside: "day-outside",
+        disabled: "day-disabled",
         range_middle: "aria-selected:bg-gray-100 aria-selected:text-gray-900",
         hidden: "invisible",
         ...classNames,
@@ -52,9 +55,9 @@ function Calendar({
       components={{
         Chevron: (props) => {
           if (props.orientation === "left") {
-            return <ChevronLeft className="h-4 w-4" />;
+            return <ArrowLeft className="h-4 w-4" />;
           }
-          return <ChevronRight className="h-4 w-4" />;
+          return <ArrowRight className="h-4 w-4" />;
         },
       }}
       {...props}

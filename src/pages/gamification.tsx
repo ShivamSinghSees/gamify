@@ -1,30 +1,10 @@
 import { useState } from "react";
 import landingBg from "@/assets/landing-bg.webp";
-import { GiftIcon, CrownIcon, MoneyIcon } from "@/components/icons";
 import { GamificationCard } from "@/components/gamification/gamification-card";
 import { CreateRewardModal } from "@/components/modals/create-reward-modal";
 import { Button } from "@/components/ui/button";
 
-const CARDS_DATA = [
-  {
-    title: "Reward Your Ambassadors",
-    description:
-      "Boost campaign performance by setting up rewards for ambassadors",
-    icon: GiftIcon,
-  },
-  {
-    title: "Set Milestones",
-    description:
-      "Set up custom goals for sales, posts, or time-based achievements",
-    icon: CrownIcon,
-  },
-  {
-    title: "Customise Incentives",
-    description:
-      "Create custom incentives like flat fees, free products, or special commissions",
-    icon: MoneyIcon,
-  },
-];
+import { CARDS_DATA } from "@/constants/gamification";
 
 export function GamificationPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,10 +12,10 @@ export function GamificationPage() {
   return (
     <div className="p-4 xl:p-0 bg-white">
       <div
-        className="w-full bg-contain bg-center bg-no-repeat flex flex-col items-center mt-10 h-[320px]"
+        className="w-full bg-cover bg-top bg-no-repeat flex flex-col items-center mt-10 min-h-[320px]"
         style={{ backgroundImage: `url(${landingBg})` }}
       >
-        <div className="w-[354px] text-center pt-[60px] ">
+        <div className="max-w-[354px] w-full text-center pt-[60px] px-4">
           <h1 className="text-28 leading-[1.4] font-semibold text-brand-800 ">
             Gamify your Campaign
           </h1>
@@ -55,7 +35,7 @@ export function GamificationPage() {
       </div>
 
       {/* Cards Section with flowing waves */}
-      <div className="relative mt-[-40px] md:mt-[-65px] px-[18px] pb-20 overflow-hidden">
+      <div className="relative mt-[-40px] md:mt-[-65px] px-[18px] overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
           {CARDS_DATA.map((card, index) => (
             <GamificationCard

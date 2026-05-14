@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -17,6 +18,14 @@ export function TimeBoundToggle() {
   const { isTimeBound, endDate } = useAppSelector((state) => state.reward);
 
   const date = endDate ? new Date(endDate) : undefined;
+  const [month, setMonth] = React.useState<Date | undefined>(date);
+
+  // Sync month with date when date is first loaded or changed externally
+  React.useEffect(() => {
+    if (date) {
+      setMonth(date);
+    }
+  }, [endDate]);
 
   return (
     <div className="space-y-3">
@@ -25,7 +34,7 @@ export function TimeBoundToggle() {
           <div className="flex items-center gap-2 justify-between py-1">
             <Label
               htmlFor="isTimeBound"
-              className="text-sm font-medium text-gray-800"
+              className="text-sm font-medium text-gray-800 cursor-pointer"
             >
               Make the reward time bound
             </Label>
@@ -60,9 +69,14 @@ export function TimeBoundToggle() {
             <Calendar
               mode="single"
               selected={date}
-              onSelect={(newDate) =>
-                dispatch(setEndDate(newDate ? newDate.toISOString() : null))
-              }
+              month={month}
+              onMonthChange={setMonth}
+              onSelect={(newDate) => {
+                dispatch(setEndDate(newDate ? newDate.toISOString() : null));
+                if (newDate) {
+                  setMonth(newDate);
+                }
+              }}
               disabled={(date) =>
                 date < new Date(new Date().setHours(0, 0, 0, 0))
               }

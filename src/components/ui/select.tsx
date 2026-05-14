@@ -20,7 +20,7 @@ const SelectTrigger = React.forwardRef<
     <SelectPrimitive.Trigger
       ref={ref}
       className={cn(
-        "group flex h-fit w-full items-center justify-between rounded-lg border border-gray-border bg-white px-4 py-2 text-gray-800 data-placeholder:text-gray-300 leading-[1.4] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 data-[state=open]:border-brand-500 data-[state=open]:ring-1 data-[state=open]:ring-brand-500",
+        "group flex h-fit w-full items-center justify-between rounded-lg border border-gray-border bg-white px-4 py-2 text-gray-800 data-placeholder:text-gray-300 leading-[1.4] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 data-[state=open]:border-brand-500 data-[state=open]:ring-1 data-[state=open]:ring-brand-500 cursor-pointer ",
         errorMessage &&
           "border-red-500 focus:border-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-red-500",
         className,
@@ -123,7 +123,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-md py-2.5 px-2 text-sm text-gray-800 outline-none focus:bg-gray-100 focus:text-gray-800 data-[state=checked]:bg-brand-75 data-[state=checked]:text-brand-500 data-disabled:pointer-events-none data-disabled:opacity-50",
+      "relative flex w-full select-none items-center rounded-md py-2.5 px-2 text-sm text-gray-800 outline-none focus:bg-gray-100 focus:text-gray-800 data-[state=checked]:bg-brand-75 data-[state=checked]:text-brand-500 data-disabled:pointer-events-none data-disabled:opacity-50 cursor-pointer ",
       className,
     )}
     {...props}

@@ -18,8 +18,9 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   setSelectedCommissionTier,
   closeCommissionTierModal,
+  clearRewardWith,
 } from "@/store/reward-slice";
-import { COMMISSION_TIERS } from "@/constants/reward";
+import { COMMISSION_TIERS, VALIDATION_MESSAGES } from "@/constants/reward";
 import type { CommissionTier } from "@/types/reward";
 
 export function CommissionTierModal() {
@@ -39,7 +40,10 @@ export function CommissionTierModal() {
     dispatch(closeCommissionTierModal());
   };
 
-  const handleGoBack = () => {
+  const handleClose = () => {
+    if (!selectedCommissionTier) {
+      dispatch(clearRewardWith());
+    }
     dispatch(closeCommissionTierModal());
   };
 
@@ -47,7 +51,7 @@ export function CommissionTierModal() {
     <Dialog
       open={isCommissionTierModalOpen}
       onOpenChange={(open) => {
-        if (!open) dispatch(closeCommissionTierModal());
+        if (!open) handleClose();
       }}
     >
       <DialogContent className="sm:max-w-[400px] p-6">
@@ -77,21 +81,26 @@ export function CommissionTierModal() {
             </Select>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="grid grid-cols-2 gap-4 pt-2">
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
-              onClick={handleGoBack}
+              fullWidth
+              onClick={handleClose}
             >
               Go back
             </Button>
             <Button
               type="button"
               variant="gamify"
-              className="flex-1"
+              fullWidth
               onClick={handleSave}
               disabled={!localTier}
+              tooltipText={
+                !localTier
+                  ? VALIDATION_MESSAGES.COMMISSION_TIER_REQUIRED
+                  : undefined
+              }
             >
               Save
             </Button>

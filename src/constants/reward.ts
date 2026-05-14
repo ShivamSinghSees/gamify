@@ -29,5 +29,7 @@ export const VALIDATION_MESSAGES = {
   POSTS_FIELDS_REQUIRED:
     "Enter the post count and select a time period to continue",
   BONUS_AMOUNT_REQUIRED: "Enter the bonus amount to continue",
+  END_DATE_REQUIRED: "Choose reward end date to continue",
+  COMMISSION_TIER_REQUIRED: "Select a commission tier to continue",
   FORM_INCOMPLETE: "Choose a reward trigger and a reward to continue",
 } as const;

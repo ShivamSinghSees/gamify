@@ -7,11 +7,13 @@ interface DropdownShellProps {
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
+  onSave?: () => void;
   hasValue: boolean;
   displayLabel: string;
   placeholder: string;
   saveDisabled?: boolean;
   saveTooltip?: string;
+  showActions?: boolean;
   children: React.ReactNode;
 }
 
@@ -19,11 +21,13 @@ export function DropdownShell({
   isOpen,
   onToggle,
   onClose,
+  onSave,
   hasValue,
   displayLabel,
   placeholder,
   saveDisabled,
   saveTooltip,
+  showActions = true,
   children,
 }: DropdownShellProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -49,12 +53,14 @@ export function DropdownShell({
       {isOpen && (
         <div className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-md overflow-hidden p-1">
           {children}
-          <DropdownActions
-            onCancel={onClose}
-            onSave={onClose}
-            saveDisabled={saveDisabled}
-            saveTooltip={saveTooltip}
-          />
+          {showActions && (
+            <DropdownActions
+              onCancel={onClose}
+              onSave={onSave || onClose}
+              saveDisabled={saveDisabled}
+              saveTooltip={saveTooltip}
+            />
+          )}
         </div>
       )}
     </div>

@@ -1,4 +1,12 @@
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { DropdownOption } from "./dropdown-option";
 import { DropdownShell } from "./dropdown-shell";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -10,7 +18,7 @@ import {
   setRewardEventDropdownOpen,
 } from "@/store/reward-slice";
 import { POSTS_PERIOD_OPTIONS, VALIDATION_MESSAGES } from "@/constants/reward";
-import type { PostsPeriod } from "@/types/reward";
+import type { PostsPeriod, RewardEvent } from "@/types/reward";
 
 interface RewardEventDropdownProps {
   displayLabel: string;
@@ -20,24 +28,47 @@ export function RewardEventDropdown({
   displayLabel,
 }: RewardEventDropdownProps) {
   const dispatch = useAppDispatch();
-  const {
-    rewardEvent,
-    salesAmount,
-    postsCount,
-    postsPeriod,
-    isRewardEventDropdownOpen,
-  } = useAppSelector((state) => state.reward);
+  const reduxState = useAppSelector((state) => state.reward);
+  const { isRewardEventDropdownOpen } = reduxState;
 
-  const closeDropdown = () => dispatch(setRewardEventDropdownOpen(false));
+  // Local state for drafting
+  const [localEvent, setLocalEvent] = useState<RewardEvent | null>(null);
+  const [localSalesAmount, setLocalSalesAmount] = useState("");
+  const [localPostsCount, setLocalPostsCount] = useState("");
+  const [localPostsPeriod, setLocalPostsPeriod] = useState<PostsPeriod | null>(
+    null,
+  );
+
+  // Initialize local state when dropdown opens
+  useEffect(() => {
+    if (isRewardEventDropdownOpen) {
+      setLocalEvent(reduxState.rewardEvent);
+      setLocalSalesAmount(reduxState.salesAmount);
+      setLocalPostsCount(reduxState.postsCount);
+      setLocalPostsPeriod(reduxState.postsPeriod);
+    }
+  }, [isRewardEventDropdownOpen, reduxState]);
+
+  const handleSave = () => {
+    dispatch(setRewardEvent(localEvent));
+    dispatch(setSalesAmount(localSalesAmount));
+    dispatch(setPostsCount(localPostsCount));
+    dispatch(setPostsPeriod(localPostsPeriod));
+    dispatch(setRewardEventDropdownOpen(false));
+  };
+
+  const handleCancel = () => {
+    dispatch(setRewardEventDropdownOpen(false));
+  };
 
   const { isSaveDisabled, saveTooltip } = (() => {
-    if (rewardEvent === "cross_x_sales" && !salesAmount) {
+    if (localEvent === "cross_x_sales" && !localSalesAmount) {
       return {
         isSaveDisabled: true,
         saveTooltip: VALIDATION_MESSAGES.SALES_AMOUNT_REQUIRED,
       };
     }
-    if (rewardEvent === "posts_x_times" && (!postsCount || !postsPeriod)) {
+    if (localEvent === "posts_x_times" && (!localPostsCount || !localPostsPeriod)) {
       return {
         isSaveDisabled: true,
         saveTooltip: VALIDATION_MESSAGES.POSTS_FIELDS_REQUIRED,
@@ -52,26 +83,30 @@ export function RewardEventDropdown({
       onToggle={() =>
         dispatch(setRewardEventDropdownOpen(!isRewardEventDropdownOpen))
       }
-      onClose={closeDropdown}
-      hasValue={!!rewardEvent}
+      onClose={handleCancel}
+      onSave={handleSave}
+      hasValue={!!reduxState.rewardEvent}
       displayLabel={displayLabel}
       placeholder="Select an event"
       saveDisabled={isSaveDisabled}
       saveTooltip={saveTooltip}
+      showActions={
+        localEvent === "cross_x_sales" || localEvent === "posts_x_times"
+      }
     >
       <DropdownOption
         label="Cross $X in sales"
-        selected={rewardEvent === "cross_x_sales"}
-        onSelect={() => dispatch(setRewardEvent("cross_x_sales"))}
+        selected={localEvent === "cross_x_sales"}
+        onSelect={() => setLocalEvent("cross_x_sales")}
       >
-        {rewardEvent === "cross_x_sales" && (
+        {localEvent === "cross_x_sales" && (
           <div className="my-1 " onClick={(e) => e.stopPropagation()}>
             <Input
               prefix="$"
               type="number"
               placeholder="e.g. 100"
-              value={salesAmount}
-              onChange={(e) => dispatch(setSalesAmount(e.target.value))}
+              value={localSalesAmount}
+              onChange={(e) => setLocalSalesAmount(e.target.value)}
             />
           </div>
         )}
@@ -79,47 +114,47 @@ export function RewardEventDropdown({
 
       <DropdownOption
         label="Posts X times every Y period"
-        selected={rewardEvent === "posts_x_times"}
-        onSelect={() => dispatch(setRewardEvent("posts_x_times"))}
+        selected={localEvent === "posts_x_times"}
+        onSelect={() => setLocalEvent("posts_x_times")}
       >
-        {rewardEvent === "posts_x_times" && (
+        {localEvent === "posts_x_times" && (
           <div
-            className="px- pb-2 flex gap-2"
+            className="my-1 grid grid-cols-2 gap-2"
             onClick={(e) => e.stopPropagation()}
           >
             <Input
               type="number"
-              placeholder="X times"
-              value={postsCount}
-              className="w-1/2"
-              onChange={(e) => dispatch(setPostsCount(e.target.value))}
+              placeholder="eg: 4 "
+              value={localPostsCount}
+              className="px-2"
+              onChange={(e) => setLocalPostsCount(e.target.value)}
             />
-            <select
-              className="w-1/2 h-9 rounded-lg border border-gray-border bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
-              value={postsPeriod ?? ""}
-              onChange={(e) =>
-                dispatch(setPostsPeriod(e.target.value as PostsPeriod))
-              }
+            <Select
+              value={localPostsPeriod ?? ""}
+              onValueChange={(val) => setLocalPostsPeriod(val as PostsPeriod)}
             >
-              <option value="" disabled>
-                Period
-              </option>
-              {POSTS_PERIOD_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="">
+                <SelectValue placeholder="Period" />
+              </SelectTrigger>
+              <SelectContent>
+                {POSTS_PERIOD_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         )}
       </DropdownOption>
 
       <DropdownOption
         label="Is Onboarded"
-        selected={rewardEvent === "is_onboarded"}
+        selected={localEvent === "is_onboarded"}
         onSelect={() => {
+          // Direct selection for simple options
           dispatch(setRewardEvent("is_onboarded"));
-          closeDropdown();
+          dispatch(setRewardEventDropdownOpen(false));
         }}
       />
     </DropdownShell>

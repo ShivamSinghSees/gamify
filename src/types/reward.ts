@@ -1,4 +1,4 @@
-export type RewardEventType =
+export type RewardEvent =
   | "cross_x_sales"
   | "posts_x_times"
   | "is_onboarded";
@@ -10,7 +10,7 @@ export type PostsPeriod =
   | "3_months"
   | "1_year";
 
-export type RewardWithType = "flat_bonus" | "upgrade_commission_tier";
+export type RewardWith = "flat_bonus" | "upgrade_commission_tier";
 
 export type CommissionTier =
   | "silver"

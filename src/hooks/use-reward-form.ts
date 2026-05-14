@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { resetRewardForm } from "@/store/reward-slice";
 import { POSTS_PERIOD_OPTIONS, COMMISSION_TIER_LABELS } from "@/constants/reward";
+import { toast } from "@/hooks/use-toast";
 
 export function useRewardForm(onOpenChange: (open: boolean) => void) {
   const dispatch = useAppDispatch();
@@ -16,6 +17,7 @@ export function useRewardForm(onOpenChange: (open: boolean) => void) {
     flatBonusAmount,
     selectedCommissionTier,
     isTimeBound,
+    endDate,
   } = reward;
 
   const isFormValid = useMemo(() => {
@@ -26,8 +28,19 @@ export function useRewardForm(onOpenChange: (open: boolean) => void) {
     if (rewardWith === "flat_bonus" && !flatBonusAmount) return false;
     if (rewardWith === "upgrade_commission_tier" && !selectedCommissionTier)
       return false;
+    if (isTimeBound && !endDate) return false;
     return true;
-  }, [rewardEvent, salesAmount, postsCount, postsPeriod, rewardWith, flatBonusAmount, selectedCommissionTier]);
+  }, [
+    rewardEvent,
+    salesAmount,
+    postsCount,
+    postsPeriod,
+    rewardWith,
+    flatBonusAmount,
+    selectedCommissionTier,
+    isTimeBound,
+    endDate,
+  ]);
 
   const rewardEventDisplayLabel = useMemo((): string => {
     if (!rewardEvent) return "";
@@ -75,9 +88,13 @@ export function useRewardForm(onOpenChange: (open: boolean) => void) {
       flatBonusAmount,
       selectedCommissionTier,
       isTimeBound,
+      endDate,
     });
     onOpenChange(false);
     dispatch(resetRewardForm());
+    toast({
+      title: "Reward Created!",
+    });
   }, [
     dispatch,
     onOpenChange,
@@ -89,6 +106,7 @@ export function useRewardForm(onOpenChange: (open: boolean) => void) {
     flatBonusAmount,
     selectedCommissionTier,
     isTimeBound,
+    endDate,
   ]);
 
   return {

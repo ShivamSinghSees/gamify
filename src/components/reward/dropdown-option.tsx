@@ -25,7 +25,7 @@ export function DropdownOption({
         type="button"
         className={`group/option flex w-full items-center justify-between px-2 py-2.5 text-sm cursor-pointer transition-colors rounded-md ${
           disabled
-            ? "opacity-50 cursor-not-allowed text-gray-400"
+            ? "cursor-not-allowed text-gray-300"
             : selected
               ? "bg-brand-75 text-brand-500"
               : "text-gray-800 hover:bg-gray-100"
